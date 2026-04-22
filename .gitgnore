@@ -1,1 +1,4 @@
-
+client_secret_12474475031-6ar3ue8r2p985sorsh2lmnfr656meqbm.apps.googleusercontent.com.json
+venv/
+__pycache__/
+*.pyc
