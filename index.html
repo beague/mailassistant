@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Mail Assistant</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+}
+
+/* HEADER */
+header {
+    padding: 20px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    background: #111827;
+}
+
+/* CONTAINER */
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding: 15px;
+}
+
+/* MAIL CARD */
+.mail {
+    background: #1e293b;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* TEXT */
+.subject {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.from {
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+.date {
+    font-size: 11px;
+    color: #64748b;
+}
+
+.snippet {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #cbd5e1;
+}
+
+/* BUTTON */
+button {
+    margin-top: 10px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* RESPONSIVE MOBILE */
+@media (max-width: 600px) {
+    .mail {
+        padding: 12px;
+    }
+
+    .subject {
+        font-size: 16px;
+    }
+
+    header {
+        font-size: 18px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>📩 Mail Assistant</header>
+
+<div class="container" id="emails"></div>
+
+<script>
+
+async function loadEmails() {
+    const res = await fetch("/emails");
+    const data = await res.json();
+
+    const container = document.getElementById("emails");
+    container.innerHTML = "";
+
+    data.forEach(mail => {
+        const div = document.createElement("div");
+        div.className = "mail";
+
+        div.innerHTML = `
+            <div class="subject">${mail.subject || "(sans sujet)"}</div>
+            <div class="from">De : ${mail.from}</div>
+            <div class="date">${mail.date}</div>
+            <div class="snippet">${mail.snippet}</div>
+
+            <button onclick="deleteMail('${mail.id}', this)">
+                🗑 Supprimer
+            </button>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+
+// DELETE MAIL
+async function deleteMail(id, btn) {
+    btn.innerText = "Suppression...";
+
+    await fetch("/delete/" + id);
+
+    btn.parentElement.remove();
+}
+
+loadEmails();
+
+</script>
+
+</body>
+</html>
